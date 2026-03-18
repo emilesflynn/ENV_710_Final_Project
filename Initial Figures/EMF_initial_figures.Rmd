@@ -34,19 +34,23 @@ Data_Clean1 <- Data_Clean1 %>%
       month %in% c("Jan", "Feb", "Mar", "Apr", "May", "Jun") ~ "Before",
       month %in% c("Jul", "Aug", "Sep", "Oct", "Nov", "Dec") ~ "After"))
 
-TotalP_fig1 <- ggplot(Data_Clean1, aes(x = ))
-trout_fig2 <- ggplot(trout_recapture_data, 
-                          aes(x = length_1_mm)) +
-  geom_histogram() +
-    facet_wrap(~year) +
-  labs(x = "Snout-to-Fork Length (mm)",
-       y = "Trout Count",
-       title = "Distribution of Cutthroat Trout Lengths By Year",
-       caption = "Figure 2: Cutthroat Trout length in Mack Creek for different 
-       years (captured and tagged in 2014; recaptured in 2015). Dataset 
-       collected by H.J. Andrews Long Term Ecological Research program within 
-       the Mack Creek watershed in Oregon") +
-  theme(legend.position = "none")
+Data_Clean2 <- Data_Clean %>%
+  mutate(
+    Status = case_when(
+      Date <= as.Date("2024-07-03") ~ "Before",
+      Date >= as.Date("2024-07-09") ~ "After"
+    )
+  )
+
+unique(Data_Clean2$Date)
+TotalP_fig1 <- ggplot(Data_Clean2, aes(x = Total.Phosphorus)) +
+  geom_histogram(alpha = 0.6) +
+  labs(
+    x = "Storm Status",
+    y = "Total Phosphorus (mg/L)",
+    title = "Distribution of Total Phosphorus Levels by Storm Status"
+  )
+print(TotalP_fig1)
 
 ```
 
