@@ -1,0 +1,53 @@
+---
+title: "Initial_Figures"
+author: "Elizabeth Miles-Flynn"
+date: "2026-03-18"
+output: pdf_document
+---
+
+## Set Up
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(here)
+
+getwd()
+here()
+
+Data_Clean <- read.csv(file = here("Initial Figures/SlaySMilesFlynnESuEData_Cleaned.csv"),
+                      stringsAsFactors = TRUE)
+Data_Clean$Date <- ymd(Data_Clean$Date)
+
+Data_Clean1 <- Data_Clean %>%
+  mutate(
+    month = factor(
+      month(Date),
+      levels = 1:12,
+      labels = month.abb,
+      ordered = TRUE),
+      Year = year(Date))
+
+Data_Clean1 <- Data_Clean1 %>%
+  mutate(
+    Status = case_when(
+      month %in% c("Jan", "Feb", "Mar", "Apr", "May", "Jun") ~ "Before",
+      month %in% c("Jul", "Aug", "Sep", "Oct", "Nov", "Dec") ~ "After"))
+
+TotalP_fig1 <- ggplot(Data_Clean1, aes(x = ))
+trout_fig2 <- ggplot(trout_recapture_data, 
+                          aes(x = length_1_mm)) +
+  geom_histogram() +
+    facet_wrap(~year) +
+  labs(x = "Snout-to-Fork Length (mm)",
+       y = "Trout Count",
+       title = "Distribution of Cutthroat Trout Lengths By Year",
+       caption = "Figure 2: Cutthroat Trout length in Mack Creek for different 
+       years (captured and tagged in 2014; recaptured in 2015). Dataset 
+       collected by H.J. Andrews Long Term Ecological Research program within 
+       the Mack Creek watershed in Oregon") +
+  theme(legend.position = "none")
+
+```
+
+
