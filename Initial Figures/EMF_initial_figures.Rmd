@@ -1,11 +1,11 @@
 ---
-title: "Initial_Figures"
+title: "Initial Figures"
 author: "Elizabeth Miles-Flynn"
 date: "2026-03-18"
 output: pdf_document
 ---
 
-## Set Up
+## Load Packages and Data
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
@@ -17,9 +17,13 @@ here()
 
 Data_Clean <- read.csv(file = here("Initial Figures/SlaySMilesFlynnESuEData_Cleaned.csv"),
                       stringsAsFactors = TRUE)
+```
+
+## Tidy Datasets
+```{r Add Month Column}
 Data_Clean$Date <- ymd(Data_Clean$Date)
 
-Data_Clean1 <- Data_Clean %>%
+Mth_Data <- Data_Clean %>%
   mutate(
     month = factor(
       month(Date),
@@ -28,29 +32,54 @@ Data_Clean1 <- Data_Clean %>%
       ordered = TRUE),
       Year = year(Date))
 
-Data_Clean1 <- Data_Clean1 %>%
+Mth_Data <- Mth_Data %>%
   mutate(
     Status = case_when(
       month %in% c("Jan", "Feb", "Mar", "Apr", "May", "Jun") ~ "Before",
       month %in% c("Jul", "Aug", "Sep", "Oct", "Nov", "Dec") ~ "After"))
 
-Data_Clean2 <- Data_Clean %>%
+Without_Storm <- Mth_Data %>%
   mutate(
     Status = case_when(
       Date <= as.Date("2024-07-03") ~ "Before",
-      Date >= as.Date("2024-07-09") ~ "After"
-    )
-  )
+      Date >= as.Date("2024-07-09") ~ "After"))
 
-unique(Data_Clean2$Date)
-TotalP_fig1 <- ggplot(Data_Clean2, aes(x = Total.Phosphorus)) +
-  geom_histogram(alpha = 0.6) +
+Before_Storm <- Mth_Data %>%
+  filter(month %in% c("Jan", "Feb", "Mar", "Apr", "May", "Jun"))
+
+After_Storm <- Mth_Data %>%
+  filter(month %in% c("Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))
+
+max(Mth_Data$Ammonia.Nitrogen, na.rm = TRUE)
+min(Mth_Data$Ammonia.Nitrogen, na.rm = TRUE)
+```
+
+
+## Initial Figures
+```{r in order from left to right in dataframe Mth_Data}
+NH3_fig1 <- ggplot(Mth_Data, aes(x = month, y = Ammonia.Nitrogen)) +
+  stat_summary(fun = "mean", geom = "bar", fill = "yellowgreen") +
   labs(
-    x = "Storm Status",
+    x = "Month",
+    y = "Ammonia Nitrogen (mg/L)",
+    title = "Ammonia Nitrogen Levels for Each Month in 2024"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(NH3_fig1)
+
+TotalP_fig1 <- ggplot(Data_Clean1, aes(x = month, y = Total.Phosphorus)) +
+  stat_summary(fun = "mean", geom = "bar", fill = "steelblue") +
+  labs(
+    x = "Month",
     y = "Total Phosphorus (mg/L)",
-    title = "Distribution of Total Phosphorus Levels by Storm Status"
-  )
+    title = "Total Phosphorus Levels for Each Month in 2024"
+  ) +
+  geom_vline(xintercept = 6.8)
 print(TotalP_fig1)
+
+```
+
+
 
 ```
 
