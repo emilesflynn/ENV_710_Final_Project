@@ -1,7 +1,7 @@
 ---
-title: "ENV 710 Week 7 Lab"
-author: "Yitong Su"
-date: "2026-03-04"
+title: "ENV 710 Initial Figures"
+author: "S. Slay, E. Miles-Flynn, & Y.E. Su"
+date: "2026-03-19"
 output: pdf_document
 
 ---
@@ -23,11 +23,7 @@ library(scales)
 library(kableExtra)
 library(knitr)
 library(ggcorrplot)
-
-# Load the datasets
-here()
-census_data <- read.csv(file = here("NC_Census.csv"), stringsAsFactors = TRUE)
-recre_data <- read.csv(file = here("NC_Recreation_Acreage.csv"), stringsAsFactors = TRUE)
+library(readr)
 
 ```
 
@@ -40,6 +36,72 @@ knitr::opts_chunk$set(echo = TRUE,
 
 ```
 
-## Your research question for this assignment is - What demographic factors significantly predict outdoor recreation acreage at the county level across 20 North Carolina counties?
+## Project files
 
-### (1) Load, tidy, and combine the datasets in RStudio. Filter the Office of State Budget data to include only data for the 20 relevant counties (see census data) and sum together local, state, and federal recreation acreage to form your outcome or dependent variable value of total recreation acreage by county. Filter the census data down to include only the following ten items:
+The project is stored in the following Git repository: https://github.com/emilesflynn/ENV_710_Final_Project/
+
+The raw data was downloaded from the Durham water quality web portal, which is managed by the City of Durham: http://www.durhamwaterquality.org/
+
+## Data Wrangling
+
+The raw data frame presents each measurement in a separate row. The code below merge the measurements conducted at the same location on the same day into one observation.
+
+```{r raw data}
+# Set your ggplot theme
+mytheme <- theme_classic(base_size = 14) +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "right")
+theme_set(mytheme)
+
+# Load your datasets
+durham_data_raw <- read_csv(here("Data/SlaySMilesFlynnESuEData_Raw.csv"), 
+    col_types = cols(Date = col_date(format = "%Y/%m/%d")))
+# View(durham_data_raw)
+
+# Pivot table and merge the measurements
+df_wide <- durham_data_raw %>%
+  pivot_wider(
+    id_cols = c(`Station Name`, Date), 
+    names_from = Parameter, 
+    values_from = Value,
+    values_fn = mean 
+  )
+
+write.csv(df_wide, file = here("Data/SlaySMilesFlynnESuEData_Cleaned.csv"), row.names = FALSE)
+```
+
+After obtaining the clean data frame, we then went on to add more explanatory or informational columns to help with further analyses. We isolated the river name and the sampling locations' distances to the river mouth, and add the year and month columns to help visualize the trends on the temporal scale.
+
+```{r data_wrangling}
+# Load the datasets
+here()
+data_clean <- read_csv(here("Initial Figures/SlaySMilesFlynnESuEData_Cleaned.csv"))
+
+data_clean <- data_clean %>%
+  mutate(
+    #Extract the river name abbreviation from the station name
+    River_abbr = str_extract(`Station Name`, "^[A-Z]{2}"),
+    #Extract the distance to stream mouth
+    Distance_miles = as.numeric(str_extract(`Station Name`, "[0-9.]+"))
+  )
+
+# Replace the abbreviations with your actual names
+river_lookup <- data.frame(
+  River_abbr = c("EL", "EN", "NH", "TF", "CC", "NE", "LC", "LL", "LR", "PN", "SI"),
+  Watershed = c("Ellerbe Creek", "Eno River", "New Hope Creek", "Third Fork Creek", 
+                      "Crooked Creek", "Northeast Creek", "Lick Creek", "Little Lick Creek", 
+                      "Little River", "Panther Creek", "Stirrup Iron Creek")
+)
+
+# Merge the data frames
+data_clean_final <- data_clean %>%
+  left_join(river_lookup, by = "River_abbr")
+
+# Reorder columns
+data_clean_final <- data_clean_final %>% 
+  select(`Station Name`, Watershed, River_abbr, Distance_miles, everything())
+
+
+
+```
+
