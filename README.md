@@ -3,6 +3,7 @@
 
 ## Background Information
 The City of Durham sits on top of a major drainage ridge, which creates a unique hydrological divide that splits the streams between two of North Carolina’s largest river basins: the Neuse River Basin (North), where streams like the Eno River flow into Falls Lake, eventually reaching the Pamlico Sound, and the Cape Fear River Basin (South), where streams like New Hope Creek flow into Jordan Lake (Harden et al., 2024; Stow and Borsuk, 2003). This feature makes the city a critical waterhead city, where urban activities heavily affect the regional freshwater resources. The two major lakes that Durham’s streams flow into serve thousands of households in Raleigh, Cary, Pittsboro, and other municipalities in Central North Carolina.
+
 In July 2025, Tropical Storm Chantal incurred significant, unprecedented damage in Durham. Over 150 residents were displaced in Orange County, and initial damage costs were estimated at more than $50 million (Grubb, 2025; Medina and Albeck-Ripka, 2025). However, data gaps have hindered swift action in response to the storm, and how the extreme weather event affects the local water quality is unclear. Therefore, our goal is to investigate water quality parameters and answer the research questions:
 How do Durham’s Northern and Southern watersheds differ in freshwater quality?
 How does water quality change in Durham before and after extreme weather events, such as Tropical Storm Chantal?
