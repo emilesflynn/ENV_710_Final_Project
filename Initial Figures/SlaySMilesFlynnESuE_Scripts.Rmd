@@ -1,0 +1,45 @@
+---
+title: "ENV 710 Week 7 Lab"
+author: "Yitong Su"
+date: "2026-03-04"
+output: pdf_document
+
+---
+```{r setup, include = TRUE, message = FALSE, warning = FALSE}
+
+# Load the packages
+library(here)
+library(tidyverse)
+library(moments)
+library(dplyr)
+library(viridis)
+library(ggplot2)
+library(ggpath)
+library(gt)
+library(paletteer)
+library(grid)
+library(gridExtra)
+library(scales)
+library(kableExtra)
+library(knitr)
+library(ggcorrplot)
+
+# Load the datasets
+here()
+census_data <- read.csv(file = here("NC_Census.csv"), stringsAsFactors = TRUE)
+recre_data <- read.csv(file = here("NC_Recreation_Acreage.csv"), stringsAsFactors = TRUE)
+
+```
+
+```{r global_options, include = TRUE}
+
+# Set global options for R chunks
+knitr::opts_chunk$set(echo = TRUE, 
+                      message = FALSE, 
+                      warning = FALSE)
+
+```
+
+## Your research question for this assignment is - What demographic factors significantly predict outdoor recreation acreage at the county level across 20 North Carolina counties?
+
+### (1) Load, tidy, and combine the datasets in RStudio. Filter the Office of State Budget data to include only data for the 20 relevant counties (see census data) and sum together local, state, and federal recreation acreage to form your outcome or dependent variable value of total recreation acreage by county. Filter the census data down to include only the following ten items:

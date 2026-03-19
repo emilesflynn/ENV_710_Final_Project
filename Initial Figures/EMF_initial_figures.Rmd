@@ -67,7 +67,7 @@ NH3_fig1 <- ggplot(Mth_Data, aes(x = month, y = Ammonia.Nitrogen)) +
   geom_vline(xintercept = 6.8)
 print(NH3_fig1)
 
-TotalP_fig1 <- ggplot(Data_Clean1, aes(x = month, y = Total.Phosphorus)) +
+TotalP_fig1 <- ggplot(Mth_Data, aes(x = month, y = Total.Phosphorus)) +
   stat_summary(fun = "mean", geom = "bar", fill = "steelblue") +
   labs(
     x = "Month",
