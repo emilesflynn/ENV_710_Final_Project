@@ -2,7 +2,8 @@
 title: "ENV 710 Initial Figures"
 author: "S. Slay, E. Miles-Flynn, & Y.E. Su"
 date: "2026-03-19"
-output: pdf_document
+output: 
+    pdf_document
 
 ---
 ```{r setup, include = TRUE, message = FALSE, warning = FALSE}
@@ -146,7 +147,8 @@ data_combined_2425 <- bind_rows(data_2024, data_2025) %>%
 
 This figure shows how the concentration of Dissolved Oxygen (mg/L) changed over time before and after the storm. The vertical line indicates when the Tropical Storm Chantal occurred on July 6, 2025. 
 
-```{r DO Plot, fig.cap="2025 Durham Stream Dissolved Oxygen Levels Streams by Basin."}
+
+```{r DO Plot, fig.height=5, fig.cap="2025 Durham Stream Dissolved Oxygen Levels Streams by Basin."}
 # Comparing between Northern and Southern Basins
 do_plot_2025 <- ggplot(data_clean_final_2025, aes(x = Date, y = `Dissolved Oxygen`, 
                                                   color = Basin)) +
