@@ -54,7 +54,7 @@ mytheme <- theme_classic(base_size = 14) +
 theme_set(mytheme)
 
 # Load your datasets
-durham_data_raw <- read_csv(here("Data/SlaySMilesFlynnESuEData_Raw.csv"), 
+durham_data_raw <- read_csv(here("Data/SlaySMilesFlynnESuEData_Raw_2025.csv"), 
     col_types = cols(Date = col_date(format = "%Y/%m/%d")))
 # View(durham_data_raw)
 
@@ -75,7 +75,7 @@ After obtaining the clean data frame, we then went on to add more explanatory or
 ```{r data_wrangling}
 # Load the datasets
 here()
-data_clean <- read_csv(here("Initial Figures/SlaySMilesFlynnESuEData_Cleaned.csv"))
+data_clean <- read_csv(here("Initial Figures/SlaySMilesFlynnESuEData_Cleaned_2025.csv"))
 
 data_clean <- data_clean %>%
   mutate(
@@ -84,6 +84,14 @@ data_clean <- data_clean %>%
     #Extract the distance to stream mouth
     Distance_miles = as.numeric(str_extract(`Station Name`, "[0-9.]+"))
   )
+
+# Find rows where the distance extraction failed
+problem_rows <- data_clean%>%
+  mutate(temp_dist = str_extract(`Station Name`, "[0-9.]+")) %>%
+  filter(is.na(as.numeric(temp_dist)) & !is.na(`Station Name`))
+
+# Show the unique station names that failed
+unique(problem_rows$`Station Name`)
 
 # Replace the abbreviations with your actual names
 river_lookup <- data.frame(
@@ -106,43 +114,145 @@ data_clean_final <- data_clean_final %>%
                         labels = month.abb,
                         ordered = TRUE),
          Year = year(Date),
-         Storm_status = case_when(Date <= as.Date("2024-07-03") ~ "Before",
-                            Date >= as.Date("2024-07-09") ~ "After"),
+         Storm_status = case_when(Date <= as.Date("2025-07-03") ~ "Before",
+                            Date >= as.Date("2025-07-09") ~ "After"),
          Basin = case_when(
            River_abbr %in% c("EL", "EN", "LC", "LL", "LR", "PN", "SI") ~ "Neuse (North)",
            River_abbr %in% c("CC", "NE", "NH",  "TF") ~ "Cape Fear (South)"))
 
 # Reorder columns
-data_clean_final <- data_clean_final %>% 
+data_clean_final_2025 <- data_clean_final %>% 
   select(`Station Name`, Watershed, River_abbr, Distance_miles, Basin,
          Date, Month, Year, Storm_status, everything())
+
+write.csv(data_clean_final_2025, file = here("Data/SlaySMilesFlynnESuEData_Final_2025.csv"), 
+          row.names = FALSE)
+
+# Combined the dataset
+# Change the year above to 2024 to obtain the 2024 data frame
+data_2024 <- read.csv(here("Data/SlaySMilesFlynnESuEData_Final_2024.csv"))
+data_2025 <- read.csv(here("Data/SlaySMilesFlynnESuEData_Final_2025.csv"))
+data_combined_2425 <- bind_rows(data_2024, data_2025) %>%
+  mutate(Date = as.Date(Date),
+         Year = as.factor(year(Date)),
+         # Extract the numeric month (1-12) for the x-axis calculation
+         Month_Num = month(Date))
 
 ```
 
 ## Intial figures
 
-### Scatterplot
+### Trends over the time
 
-```{r plot 1}
-do_plot <- ggplot(data_clean_final, aes(x = Date, y = `Dissolved Oxygen`, color = Basin)) +
+This figure shows how the concentration of Dissolved Oxygen (mg/L) changed over time before and after the storm. The vertical line indicates when the Tropical Storm Chantal occurred on July 6, 2025. 
+
+```{r DO Plot, fig.cap="2025 Durham Stream Dissolved Oxygen Levels Streams by Basin."}
+# Comparing between Northern and Southern Basins
+do_plot_2025 <- ggplot(data_clean_final_2025, aes(x = Date, y = `Dissolved Oxygen`, 
+                                                  color = Basin)) +
   # Add points and lines (grouped by Basin to show trends)
-  geom_point(alpha = 0.5) +
-  geom_smooth(se = FALSE, method = "loess") + 
+  geom_point(alpha = 0.5, na.rm = TRUE) +
+  geom_smooth(se = FALSE, method = "loess", na.rm = TRUE) + 
   
   # Add the NC DEQ Water Quality Standard line (5.0 mg/L)
-  geom_hline(yintercept = 5.0, linetype = "dashed", color = "orange") +
-  annotate("text", x = min(data_clean_final$Date), y = 5.3, 
+  geom_hline(yintercept = 5.0, linetype = "dashed", color = "darkorange") +
+  annotate("text", x = min(data_clean_final$Date), y = 5.5, 
            label = "NC Standard (5.0 mg/L)", color = "red", hjust = 0) +
   
+  # Add a vertical line to represent TS Chantal
+  geom_vline(xintercept = as.Date("2025-07-06"), 
+             linetype = "dashed", 
+             color = "darkred", 
+             linewidth = 0.5) +
+  # Add a text label next to the line
+  annotate("text", 
+           x = as.Date("2025-07-06"), 
+           y = 11,
+           label = "TS Chantal (Jul 6)", 
+           color = "darkred", 
+           angle = 90, 
+           vjust = -0.5, 
+           fontface = "bold")+
+  
+  # Extend the x-axis to show the full labels
+  scale_x_date(
+    limits = c(as.Date("2025-01-01"), as.Date("2026-01-01")), 
+    date_labels = "%b %Y", 
+    date_breaks = "4 months")+
+    
   # Formatting
   scale_color_manual(values = c("Neuse (North)" = "#2c7bb6", 
                                 "Cape Fear (South)" = "#d7191c")) +
-  labs(title = "Dissolved Oxygen Levels in Durham Streams (2024)",
+  labs(title = "Dissolved Oxygen Levels in Durham Streams (2025)",
        subtitle = "Comparing Northern (Neuse) and Southern (Cape Fear) Watersheds",
        x = "Sampling Date",
        y = "Dissolved Oxygen (mg/L)") +
   theme_minimal() +
   theme(legend.position = "bottom")
+do_plot_2025
 
-do_plot
 ```
+
+### Scatterplot for linear regression models
+
+The figure below shows the relationship between Total Phosphorus (TP), which is a variable showing aquatic nutrient pollution level, and Dissolved Oxygen (DO), which is a strong aquatic health indicator. The linear regression model finds a strong relationship (*p-value* < 0.05).
+
+```{r plot2, fig.cap="Linear regression of Total Phosphorus v. Dissolved Oxygen by Basin."}
+regression_plot <- data_clean_final_2025  %>%
+  # This removes all rows where the x-variable is greater than 0.65
+  filter(`Total Phosphorus` <= 0.65) %>%
+  ggplot(aes(x = `Total Phosphorus`, y = `Dissolved Oxygen`, 
+                                          color = Basin)) +
+  # Use points with transparency to handle overlapping data
+  geom_point(alpha = 0.5, size = 2, na.rm = TRUE) +
+  
+  # Add the Linear Regression Model (method = "lm")
+  # This adds a line of best fit for each Basin
+  geom_smooth(method = "lm", se = TRUE, fill = "lightgray", na.rm = TRUE) +
+  
+  # Formatting
+  scale_color_brewer(palette = "Set1") +
+  # facet_wrap(~Basin) +
+  labs(title = "Relationship Between Total Phosphorus and Dissolved Oxygen",
+       subtitle = "Linear regression of Total Phosphorus vs. Dissolved Oxygen by Basin",
+       x = "Total Phosphorus (mg/L)",
+       y = "Dissolved Oxygen (mg/L)",
+       color = "Basin",
+       caption = "Three outliers (TP > 0.65 mg/L) removed as high-leverage observations") +
+  theme_minimal() +
+  theme(legend.position = c(0.8, 0.15))
+
+regression_plot
+```
+
+The figures below are exploratory.
+
+```{r TSS plot, include=FALSE}
+TSS_fig22 <- data_clean_final_2025 %>%
+  filter(`Total Suspended Solids`< 100) %>%
+  ggplot(aes(x = Month, y = `Total Suspended Solids`)) +
+  stat_summary(fun = "mean", geom = "bar", fill = "orange") +
+  labs(
+    x = "Month",
+    y = "Total Suspended Solids (mg/L)") +
+  geom_vline(xintercept = 6.8)
+print(TSS_fig22)
+
+TUR_fig23 <- ggplot(data_clean_final_2025, aes(x = Month, y = Turbidity)) +
+  stat_summary(fun = "mean", geom = "bar", fill = "lightpink") +
+  labs(
+    x = "Month",
+    y = "Turbidity (NTU)") +
+  geom_vline(xintercept = 6.8)
+print(TUR_fig23)
+
+Zn_fig24 <- ggplot(data_clean_final_2025, aes(x = Month, y = Zinc)) +
+  stat_summary(fun = "mean", geom = "bar", fill = "grey25") +
+  labs(
+    x = "Month",
+    y = "Zinc (ug/L)") +
+  geom_vline(xintercept = 6.8)
+print(Zn_fig24)
+
+```
+

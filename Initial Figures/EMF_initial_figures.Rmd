@@ -15,7 +15,7 @@ library(here)
 getwd()
 here()
 
-Data_Clean <- read.csv(file = here("Data/SlaySMilesFlynnESuEData_Cleaned.csv"),
+Data_Clean <- read.csv(file = here("Data/SlaySMilesFlynnESuEData_Cleaned_2025.csv"),
                       stringsAsFactors = TRUE)
 ```
 
@@ -246,7 +246,9 @@ TotalP_fig21 <- ggplot(Mth_Data, aes(x = month, y = Total.Phosphorus)) +
   geom_vline(xintercept = 6.8)
 print(TotalP_fig1)
 
-TSS_fig22 <- ggplot(Mth_Data, aes(x = month, y = Total.Suspended.Solids)) +
+TSS_fig22 <- Mth_Data %>%
+  filter(Total.Suspended.Solids < 100) %>%
+  ggplot(aes(x = month, y = Total.Suspended.Solids)) +
   stat_summary(fun = "mean", geom = "bar", fill = "orange2") +
   labs(
     x = "Month",

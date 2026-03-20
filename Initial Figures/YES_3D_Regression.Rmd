@@ -1,0 +1,23 @@
+---
+title: "ENV 710 Initial Figures"
+author: "S. Slay, E. Miles-Flynn, & Y.E. Su"
+date: "2026-03-19"
+output: html_document
+
+---
+
+```{r message=FALSE, warning=FALSE}
+library(plotly)
+library(here)
+# Set global options for R chunks
+knitr::opts_chunk$set(echo = TRUE, 
+                      message = FALSE, 
+                      warning = FALSE)
+
+data_2025 <- read.csv(here("Data/SlaySMilesFlynnESuEData_Final_2025.csv"))
+
+plot_ly(data=data_2025, z=~Dissolved.Oxygen, x=~Total.Phosphorus, y=~Organic.Carbon, 
+        color=~Watershed, opacity=0.6) %>%
+  add_markers()
+
+```
