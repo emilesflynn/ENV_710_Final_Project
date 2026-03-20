@@ -97,11 +97,52 @@ river_lookup <- data.frame(
 data_clean_final <- data_clean %>%
   left_join(river_lookup, by = "River_abbr")
 
+# Add month and year columns
+data_clean_final$Date <- ymd(data_clean_final$Date)
+
+data_clean_final <- data_clean_final %>%
+  mutate(Month = factor(month(Date),
+                        levels = 1:12,
+                        labels = month.abb,
+                        ordered = TRUE),
+         Year = year(Date),
+         Storm_status = case_when(Date <= as.Date("2024-07-03") ~ "Before",
+                            Date >= as.Date("2024-07-09") ~ "After"),
+         Basin = case_when(
+           River_abbr %in% c("EL", "EN", "LC", "LL", "LR", "PN", "SI") ~ "Neuse (North)",
+           River_abbr %in% c("CC", "NE", "NH",  "TF") ~ "Cape Fear (South)"))
+
 # Reorder columns
 data_clean_final <- data_clean_final %>% 
-  select(`Station Name`, Watershed, River_abbr, Distance_miles, everything())
-
-
+  select(`Station Name`, Watershed, River_abbr, Distance_miles, Basin,
+         Date, Month, Year, Storm_status, everything())
 
 ```
 
+## Intial figures
+
+### Scatterplot
+
+```{r plot 1}
+do_plot <- ggplot(data_clean_final, aes(x = Date, y = `Dissolved Oxygen`, color = Basin)) +
+  # Add points and lines (grouped by Basin to show trends)
+  geom_point(alpha = 0.5) +
+  geom_smooth(se = FALSE, method = "loess") + 
+  
+  # Add the NC DEQ Water Quality Standard line (5.0 mg/L)
+  geom_hline(yintercept = 5.0, linetype = "dashed", color = "orange") +
+  annotate("text", x = min(data_clean_final$Date), y = 5.3, 
+           label = "NC Standard (5.0 mg/L)", color = "red", hjust = 0) +
+  
+  # Formatting
+  scale_color_manual(values = c("Neuse (North)" = "#2c7bb6", 
+                                "Cape Fear (South)" = "#d7191c")) +
+  labs(title = "Dissolved Oxygen Levels in Durham Streams (2024)",
+       subtitle = "Comparing Northern (Neuse) and Southern (Cape Fear) Watersheds",
+       x = "Sampling Date",
+       y = "Dissolved Oxygen (mg/L)") +
+  theme_minimal() +
+  theme(legend.position = "bottom")
+
+do_plot
+```
