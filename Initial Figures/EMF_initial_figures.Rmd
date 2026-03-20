@@ -15,7 +15,7 @@ library(here)
 getwd()
 here()
 
-Data_Clean <- read.csv(file = here("Initial Figures/SlaySMilesFlynnESuEData_Cleaned.csv"),
+Data_Clean <- read.csv(file = here("Data/SlaySMilesFlynnESuEData_Cleaned.csv"),
                       stringsAsFactors = TRUE)
 ```
 
@@ -61,22 +61,214 @@ NH3_fig1 <- ggplot(Mth_Data, aes(x = month, y = Ammonia.Nitrogen)) +
   stat_summary(fun = "mean", geom = "bar", fill = "yellowgreen") +
   labs(
     x = "Month",
-    y = "Ammonia Nitrogen (mg/L)",
-    title = "Ammonia Nitrogen Levels for Each Month in 2024"
+    y = "Ammonia Nitrogen (mg/L)"
   ) +
   geom_vline(xintercept = 6.8)
 print(NH3_fig1)
 
-TotalP_fig1 <- ggplot(Mth_Data, aes(x = month, y = Total.Phosphorus)) +
+BOD_fig2 <- ggplot(Mth_Data, aes(x = month, y = Biochemical.Oxygen.Demand)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="purple") +
+  labs(
+    x = "Month",
+    y = "Biochemical Oxygen Demand (mg/L)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(BOD_fig2)
+
+Cd_fig3 <- ggplot(Mth_Data, aes(x = month, y = Cadmium)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="blue") +
+  labs(
+    x = "Month",
+    y = "Cadmium (ug/L)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(Cd_fig3)
+
+Ca_fig4 <- ggplot(Mth_Data, aes(x = month, y = Calcium)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="darkred") +
+  labs(
+    x = "Month",
+    y = "Calcium (ug/L)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(Ca_fig4)
+
+Cr_fig5 <- ggplot(Mth_Data, aes(x = month, y = Chromium)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="turquoise3") +
+  labs(
+    x = "Month",
+    y = "Chromium (ug/L)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(Cr_fig5)
+
+EC_fig6 <- ggplot(Mth_Data, aes(x = month, y = Conductivity)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="coral") +
+  labs(
+    x = "Month",
+    y = "Conductivity (uS/cm at 25 deg C)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(EC_fig6)
+
+Cu_fig7 <- ggplot(Mth_Data, aes(x = month, y = Copper)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="deeppink") +
+  labs(
+    x = "Month",
+    y = "Copper (ug/L)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(Cu_fig7)
+
+DO_fig8 <- ggplot(Mth_Data, aes(x = month, y = Dissolved.Oxygen)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="gold") +
+  labs(
+    x = "Month",
+    y = "Dissolved Oxygen (mg/L)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(DO_fig8)
+
+DOSat_fig9 <- ggplot(Mth_Data, aes(x = month, y = Dissolved.Oxygen.Saturation)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="slategrey") +
+  labs(
+    x = "Month",
+    y = "Dissolved Oxygen Saturation (%)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(DOSat_fig9)
+
+FC_fig10 <- ggplot(Mth_Data, aes(x = month, y = Fecal.Coliform)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="seagreen") +
+  labs(
+    x = "Month",
+    y = "Fecal Coliform (cfu/100mL)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(FC_fig10)
+
+F_fig11 <- ggplot(Mth_Data, aes(x = month, y = Fluoride)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="plum") +
+  labs(
+    x = "Month",
+    y = "Fluoride (mg/L)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(F_fig11)
+
+GH_fig12 <- ggplot(Mth_Data, aes(x = month, y = Gage.height)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="brown2") +
+  labs(
+    x = "Month",
+    y = "Gage Height (ft)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(GH_fig12)
+
+Hard_fig13 <- ggplot(Mth_Data, aes(x = month, y = Hardness)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="deepskyblue4") +
+  labs(
+    x = "Month",
+    y = "Hardness (mg/L)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(Hard_fig13)
+
+Pb_fig14 <- ggplot(Mth_Data, aes(x = month, y = Lead)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="tan") +
+  labs(
+    x = "Month",
+    y = "Lead (ug/L)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(Pb_fig14)
+
+Mg_fig15 <- ggplot(Mth_Data, aes(x = month, y = Magnesium)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="aquamarine2") +
+  labs(
+    x = "Month",
+    y = "Magnesium (ug/L)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(Mg_fig15)
+
+NOx_fig16 <- ggplot(Mth_Data, aes(x = month, y = Nitrate...Nitrite.as.N)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="slateblue") +
+  labs(
+    x = "Month",
+    y = "Nitrate + Nitrite as N (mg/L)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(NOx_fig16)
+
+C_fig17 <- ggplot(Mth_Data, aes(x = month, y = Organic.Carbon)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="palegreen3") +
+  labs(
+    x = "Month",
+    y = "Organic Carbon (mg/L)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(C_fig17)
+
+pH_fig18 <- ggplot(Mth_Data, aes(x = month, y = pH)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="burlywood4") +
+  labs(
+    x = "Month",
+    y = "pH"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(pH_fig18)
+
+Temp_fig19 <- ggplot(Mth_Data, aes(x = month, y = Temperature)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="springgreen") +
+  labs(
+    x = "Month",
+    y = "Temperature (C)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(Temp_fig19)
+
+TN_fig20 <- ggplot(Mth_Data, aes(x = month, y = Total.Kjeldahl.Nitrogen)) +
+  stat_summary(fun = "mean", geom = "bar", fill ="maroon4") +
+  labs(
+    x = "Month",
+    y = "Total Nitrogen (mg/L)"
+  ) +
+  geom_vline(xintercept = 6.8)
+print(TN_fig20)
+
+
+TotalP_fig21 <- ggplot(Mth_Data, aes(x = month, y = Total.Phosphorus)) +
   stat_summary(fun = "mean", geom = "bar", fill = "steelblue") +
   labs(
     x = "Month",
-    y = "Total Phosphorus (mg/L)",
-    title = "Total Phosphorus Levels for Each Month in 2024"
-  ) +
+    y = "Total Phosphorus (mg/L)") +
   geom_vline(xintercept = 6.8)
 print(TotalP_fig1)
 
+TSS_fig22 <- ggplot(Mth_Data, aes(x = month, y = Total.Suspended.Solids)) +
+  stat_summary(fun = "mean", geom = "bar", fill = "orange2") +
+  labs(
+    x = "Month",
+    y = "Total Suspended Solids (mg/L)") +
+  geom_vline(xintercept = 6.8)
+print(TSS_fig22)
+
+TUR_fig23 <- ggplot(Mth_Data, aes(x = month, y = Turbidity)) +
+  stat_summary(fun = "mean", geom = "bar", fill = "lightpink") +
+  labs(
+    x = "Month",
+    y = "Turbidity (NTU)") +
+  geom_vline(xintercept = 6.8)
+print(TUR_fig23)
+
+Zn_fig24 <- ggplot(Mth_Data, aes(x = month, y = Zinc)) +
+  stat_summary(fun = "mean", geom = "bar", fill = "grey25") +
+  labs(
+    x = "Month",
+    y = "Zinc (ug/L)") +
+  geom_vline(xintercept = 6.8)
+print(Zn_fig24)
 ```
 
 
