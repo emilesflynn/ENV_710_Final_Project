@@ -25,6 +25,10 @@ library(kableExtra)
 library(knitr)
 library(ggcorrplot)
 library(readr)
+library(car)
+library(lmerTest)
+library(GGally)
+library(sjPlot)
 
 ```
 
@@ -199,6 +203,16 @@ do_plot_2025
 
 The figure below shows the relationship between Total Phosphorus (TP), which is a variable showing aquatic nutrient pollution level, and Dissolved Oxygen (DO), which is a strong aquatic health indicator. The linear regression model finds a strong relationship (*p-value* < 0.05).
 
+Note: Why are we studying how to predict DO? Why don't we directly measure DO?
+
+Answer: DO is a good indicator for water health; however, since the resulting DO can be attributed to many factors, the DO level may result from different environments and similar environments might lead to different DO levels. Testing Dissolved Oxygen (DO) directly only tells you the "what," while this analysis is designed to tell you the "why."
+
+By studying how the environmental factors/parameters contribute to the DO level, we can better understand:
+
+(1) How sensitive is DO to the environmental changes? How does DO change?
+
+(2) How might the DO level/water quality change in the future?
+
 ```{r plot2, fig.cap="Linear regression of Total Phosphorus v. Dissolved Oxygen by Basin."}
 regression_plot <- data_clean_final_2025  %>%
   # This removes all rows where the x-variable is greater than 0.65
@@ -229,7 +243,7 @@ regression_plot
 
 The figures below are exploratory.
 
-```{r TSS plot, include=FALSE}
+```{r TSS plot, echo=FALSE}
 TSS_fig22 <- data_clean_final_2025 %>%
   filter(`Total Suspended Solids`< 100) %>%
   ggplot(aes(x = Month, y = `Total Suspended Solids`)) +
@@ -256,5 +270,251 @@ Zn_fig24 <- ggplot(data_clean_final_2025, aes(x = Month, y = Zinc)) +
   geom_vline(xintercept = 6.8)
 print(Zn_fig24)
 
+
+
+
+# Load necessary libraries
+library(lme4)
+library(lmerTest) # Provides p-values for lmer models
+library(tidyverse)
+
+combined_data <- read_csv(here("Data/SlaySMilesFlynnESuEData_Final_2025.csv"))
+
+# 1. Prepare Data
+# Ensure your categorical variables are recognized as Factors
+combined_data <- combined_data %>%
+  mutate(
+    Basin = as.factor(Basin),
+    Storm_Period = factor(ifelse(year(Date) == 2025 & month(Date) >= 7, "Post-Storm", "Baseline")),
+    River_Name = as.factor(Watershed), # Use the full name you merged earlier
+    Station.Name = as.factor(`Station Name`)
+  )
+
+# 2. Run the Linear Mixed-Effects Model
+# We use 'Dissolved.Oxygen' as the response (you can change this to Turbidity, etc.)
+# Basin * Storm_Period includes the interaction term
+lmm_model <- lmer(`Dissolved Oxygen` ~ Basin +Storm_Period + Distance_miles + 
+                  (1 | River_Name / Station.Name), 
+                  data = combined_data)
+
+# 3. View the results
+summary(lmm_model)
+
+# 4. Extract the P-values and ANOVA table
+anova(lmm_model)
+
 ```
+
+## Analyses
+
+### Part 1: Mann-Whitney U Test of DO between N and S basins.
+
+Note p-value of Mann-Whitney U test is 0.01 < 0.05, which suggests a significant difference.
+
+What does it mean/what are the implications? -> the two watersheds do not respond to environmental changes in the same way, and thus we/the city should design specific strategies for each of them.
+
+```{r test}
+test_data <- combined_data %>%
+  filter(!is.na(`Dissolved Oxygen`))
+
+# 2. Check for Normality (Shapiro-Wilk Test)
+# If p < 0.05, the data is NOT normal
+shapiro_north <- shapiro.test(test_data$`Dissolved Oxygen`[test_data$Basin == "Neuse (North)"])
+shapiro_south <- shapiro.test(test_data$`Dissolved Oxygen`[test_data$Basin == "Cape Fear (South)"])
+
+print(paste("Shapiro P-value (North):", shapiro_north$p.value))
+print(paste("Shapiro P-value (South):", shapiro_south$p.value))
+
+# 3. Check for Homogeneity of Variance (Levene's Test)
+# If p < 0.05, variances are significantly different
+levene_result <- leveneTest(`Dissolved Oxygen` ~ Basin, data = test_data)
+print(levene_result)
+
+# Logic: Use t-test if both Shapiro p > 0.05 AND Levene p > 0.05. Otherwise, use Wilcoxon.
+if(shapiro_north$p.value > 0.05 & shapiro_south$p.value > 0.05 & levene_result$`Pr(>F)`[1] > 0.05) {
+  print("Assumptions met: Performing Welch's T-test")
+  final_test <- t.test(`Dissolved Oxygen` ~ Basin, data = test_data)
+} else {
+  print("Assumptions NOT met: Performing Mann-Whitney U Test (Wilcoxon Rank Sum)")
+  final_test <- wilcox.test(`Dissolved Oxygen` ~ Basin, data = test_data)
+}
+
+# Filter by treatment type
+test_N <- test_data %>%
+filter(Basin== "Neuse (North)")
+test_S <- test_data %>%
+filter(Basin== "Cape Fear (South)")
+final_test1 <- wilcox.test(test_N$`Dissolved Oxygen`, test_S$`Dissolved Oxygen`,
+                            paired = FALSE)
+
+print(final_test1)
+
+```
+
+### Part 2. Mixed models
+
+First we need to check the correlation to make avoid multicollinearity. Use the criterion mentioned in lab, correlation > 0.6. And later, after we built the model, we can double check the variance using: Variance Inflation Factor (VIF), to be mentioned in the Discussions.
+
+```{r correlation check}
+# 1. Check for correlation first
+cor_check <- combined_data %>%
+  select(`Dissolved Oxygen`, Temperature, Turbidity) %>%
+  drop_na() %>%
+  cor()
+print(cor_check)
+
+# 1. Select your candidate parameters
+params <- combined_data %>%
+  select(`Dissolved Oxygen`, Temperature, Turbidity, 
+         `Total Kjeldahl Nitrogen`, `Nitrate + Nitrite as N`, `Organic Carbon`, 
+         `Total Phosphorus`) %>%
+  drop_na()
+
+# 2. Generate the correlation matrix
+cor_matrix <- cor(params)
+print(cor_matrix)
+
+# 3. Visual Check (Highly recommended for your report)
+ggpairs(params)
+
+```
+
+Then, we compare the different model candidates. We compare AIC to decide which model is better.
+
+```{r model comparison}
+# This ensures all models see the exact same rows
+model_subset <- combined_data %>%
+  drop_na(`Dissolved Oxygen`, Temperature, `Organic Carbon`, 
+          `Total Phosphorus`, Turbidity, `Total Kjeldahl Nitrogen`)
+# Hypothesis: DO is driven by temperature and organic nutrient loading.
+model_1 <- lmer(`Dissolved Oxygen` ~ Basin + Temperature + `Organic Carbon` + `Total Phosphorus` + 
+                (1 | River_Name), data = model_subset, REML = FALSE)
+# Hypothesis: DO is driven by temperature, physical sediment, and nitrogenous waste.
+model_2 <- lmer(`Dissolved Oxygen` ~ Basin + Temperature + Turbidity + `Total Kjeldahl Nitrogen` + 
+                (1 | River_Name), data = model_subset, REML = FALSE)
+# Hypothesis: Temperature and Organic Carbon are the primary drivers.
+model_3 <- lmer(`Dissolved Oxygen` ~ Basin + Temperature + `Organic Carbon` + 
+                (1 | River_Name), data = model_subset, REML = FALSE)
+# Compare AIC (Lower is better)
+anova(model_1, model_2, model_3)
+
+```
+
+Now, the model I am showing below is DO~ Basin (categorical) + Temp + Turbidity + TKN + Stream (partial pooling)
+
+```{r mixed model}
+# Final Production Model
+final_model <- lmer(`Dissolved Oxygen` ~ Basin + Temperature + Turbidity + `Total Kjeldahl Nitrogen` + 
+                    (1 | River_Name), data = combined_data, REML = TRUE)
+
+summary(final_model)
+
+coef_plot <- plot_model(final_model, 
+                        type = "est", 
+                        show.values = TRUE, 
+                        value.offset = .3,
+                        title = "Predictors of Dissolved Oxygen in Durham Streams",
+                        axis.labels = c("TKN (Nutrients)", "Turbidity (Runoff)", 
+                                       "Temperature", "Basin [Neuse]"),
+                        vline.color = "grey")
+
+effect_plot <- plot_model(final_model, 
+                          type = "pred", 
+                          terms = c("Total Kjeldahl Nitrogen", "Basin"),
+                          title = "Predicted Dissolved Oxygen Levels",
+                          axis.title = c("Water Temperature (°C)", "Total Kjeldahl Nitrogen"))
+```
+
+Note (1) difference between N and S basins, (2) the variables that are significant in the model.
+
+```{r random slope}
+# We allow TKN to have a random slope: (Total.Kjeldahl.Nitrogen | River_Name)
+slope_model_tn <- lmer(`Dissolved Oxygen` ~ Basin + Temperature + `Total Kjeldahl Nitrogen` + 
+                       (`Total Kjeldahl Nitrogen` | River_Name), 
+                       data = combined_data, control = lmerControl(optimizer = "bobyqa"))
+# Use plot_model with type = "pred" and specify the random factor
+# This will plot the individual slopes for each river
+tn_slope_plot <- plot_model(slope_model_tn, 
+                            type = "pred", 
+                            terms = c("Total Kjeldahl Nitrogen", "River_Name"),
+                            pred.type = "re", # This ensures it uses the random effects (various slopes)
+                            ci.lvl = NA) +    # Removing CI ribbons makes the slopes easier to see
+  labs(title = "Sensitivity of Dissolved Oxygen to Nitrogen by River",
+       x = "Total Kjeldahl Nitrogen (mg/L)",
+       y = "Predicted Dissolved Oxygen (mg/L)",
+       colour = "River Name") +
+  scale_color_viridis_d(option = "plasma") +
+  theme_minimal()
+
+print(tn_slope_plot)
+
+# 4. Check the "Pooling" effect (Random Effects variance)
+# This shows how much variance is explained by the differences between rivers
+print(VarCorr(slope_model_tn), comp = "Variance")
+
+```
+
+Note: How each river is responding to the environmental changes differently.
+
+Below we are adding the storm event into the model:
+
+```{r beforeafter}
+# Define the storm windows
+combined_data <- combined_data %>%
+  mutate(Date = as.Date(Date),
+         Storm_Phase = case_when(
+           Date < as.Date("2025-07-01") ~ "Before",
+           Date >= as.Date("2025-07-01") & Date <= as.Date("2025-07-31") ~ "During",
+           Date > as.Date("2025-07-31") ~ "After"
+         ),
+         # Set "Before" as the reference group for comparison
+         Storm_Phase = factor(Storm_Phase, levels = c("Before", "During", "After")))
+
+# We use the fixed effects from your "Winner" Model 2
+# We add Storm_Phase and its interaction with TKN
+storm_impact_model <- lmer(`Dissolved Oxygen` ~ Basin + Temperature + Turbidity + 
+                           `Total Kjeldahl Nitrogen` * Storm_Phase + 
+                           (`Total Kjeldahl Nitrogen`| River_Name), 
+                           data = combined_data)
+
+summary(storm_impact_model)
+
+
+# We use type = "pred" to show predicted values
+# We facet by Storm_Phase to see how the 'spaghetti' changes over time
+spaghetti_storm <- plot_model(storm_impact_model, 
+                              type = "pred", 
+                              terms = c("Total Kjeldahl Nitrogen", "River_Name", "Storm_Phase"),
+                              pred.type = "re", # Use random effects for individual river lines
+                              ci.lvl = NA) +    # Remove ribbons for clarity
+  scale_color_viridis_d(option = "turbo") +
+  labs(title = "River-Specific Nitrogen Sensitivity Across Storm Phases",
+       subtitle = "Slopes represent the marginal effect of TKN on Dissolved Oxygen",
+       x = "Total Kjeldahl Nitrogen (mg/L)",
+       y = "Predicted Dissolved Oxygen (mg/L)",
+       colour = "River Name") +
+  theme_minimal() +
+  facet_wrap(~facet) # This creates three panels: Before, During, and After
+
+print(spaghetti_storm)
+
+```
+
+What we can learn from the new model with storm:
+
+Key Interpretations of Fixed Effects
+
+The Temperature Law: As expected, Temperature is your most significant predictor ($p < 2e-16$). For every $1°\text{C}$ increase in water temperature, Dissolved Oxygen (DO) drops by approximately $0.27\text{ mg/L}$. This is the physical baseline you've correctly controlled for.
+
+The Nitrogen "Penalty": Total Kjeldahl Nitrogen has a significant negative effect ($-1.31$, $p = 0.011$). In the "Before" (baseline) phase, increasing nitrogen significantly reduces available oxygen.
+
+The "Storm Phase After" Impact: Interestingly, Storm_PhaseAfter is highly significant and negative ($-2.00$, $p = 3.47e-06$). This suggests that after the storm passed, DO levels were $2\text{ mg/L}$ lower than the baseline even after accounting for temperature and nutrients. This points to a "lingering hangover" effect—potentially from decaying organic matter settled on the riverbeds.
+
+The Interaction Term (TKN:Storm_PhaseAfter): This is significant and positive ($1.33$, $p = 0.042$). This is a complex finding! It suggests that in the "After" phase, the negative impact of TKN on DO was actually mitigated compared to the "Before" phase. This could be because the storm "flushed" the system so thoroughly that the remaining nitrogen wasn't as biologically active, or the relationship was drowned out by the overall drop in DO.
+
+What does the tree-panel plot tell us?
+
+This plot visually proves your $H_3$ (resilience). If you see that certain rivers in the Neuse Basin have lines that stay much lower in the "After" panel than the Cape Fear rivers, you have clear evidence of a "lagging recovery" in the northern part of Durham.
+
+
 

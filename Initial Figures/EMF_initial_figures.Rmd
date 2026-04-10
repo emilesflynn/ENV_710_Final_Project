@@ -41,8 +41,8 @@ Mth_Data <- Mth_Data %>%
 Without_Storm <- Mth_Data %>%
   mutate(
     Status = case_when(
-      Date <= as.Date("2024-07-03") ~ "Before",
-      Date >= as.Date("2024-07-09") ~ "After"))
+      Date <= as.Date("2025-07-03") ~ "Before",
+      Date >= as.Date("2025-07-09") ~ "After"))
 
 Before_Storm <- Mth_Data %>%
   filter(month %in% c("Jan", "Feb", "Mar", "Apr", "May", "Jun"))
@@ -271,6 +271,7 @@ Zn_fig24 <- ggplot(Mth_Data, aes(x = month, y = Zinc)) +
     y = "Zinc (ug/L)") +
   geom_vline(xintercept = 6.8)
 print(Zn_fig24)
+
 ```
 
 
