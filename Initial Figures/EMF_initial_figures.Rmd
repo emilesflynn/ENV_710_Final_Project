@@ -57,6 +57,9 @@ min(Mth_Data$Ammonia.Nitrogen, na.rm = TRUE)
 
 ## Initial Figures
 ```{r in order from left to right in dataframe Mth_Data}
+
+months_to_show <- c("Jan", "Apr", "Jul", "Oct")
+
 NH3_fig1 <- ggplot(Mth_Data, aes(x = month, y = Ammonia.Nitrogen)) +
   stat_summary(fun = "mean", geom = "bar", fill = "yellowgreen") +
   labs(
@@ -70,9 +73,10 @@ BOD_fig2 <- ggplot(Mth_Data, aes(x = month, y = Biochemical.Oxygen.Demand)) +
   stat_summary(fun = "mean", geom = "bar", fill ="purple") +
   labs(
     x = "Month",
-    y = "Biochemical Oxygen Demand (mg/L)"
+    y = "BOD (mg/L)"
   ) +
-  geom_vline(xintercept = 6.8)
+  geom_vline(xintercept = 6.8)+ # group=1 is needed to connect lines for discrete x
+  scale_x_discrete(breaks = months_to_show)
 print(BOD_fig2)
 
 Cd_fig3 <- ggplot(Mth_Data, aes(x = month, y = Cadmium)) +
@@ -106,9 +110,9 @@ EC_fig6 <- ggplot(Mth_Data, aes(x = month, y = Conductivity)) +
   stat_summary(fun = "mean", geom = "bar", fill ="coral") +
   labs(
     x = "Month",
-    y = "Conductivity (uS/cm at 25 deg C)"
+    y = "Cond. (uS/cm)"
   ) +
-  geom_vline(xintercept = 6.8)
+  scale_x_discrete(breaks = months_to_show)
 print(EC_fig6)
 
 Cu_fig7 <- ggplot(Mth_Data, aes(x = month, y = Copper)) +
@@ -124,9 +128,10 @@ DO_fig8 <- ggplot(Mth_Data, aes(x = month, y = Dissolved.Oxygen)) +
   stat_summary(fun = "mean", geom = "bar", fill ="gold") +
   labs(
     x = "Month",
-    y = "Dissolved Oxygen (mg/L)"
+    y = "DO (mg/L)"
   ) +
-  geom_vline(xintercept = 6.8)
+  geom_vline(xintercept = 6.8)+ # group=1 is needed to connect lines for discrete x
+  scale_x_discrete(breaks = months_to_show)
 print(DO_fig8)
 
 DOSat_fig9 <- ggplot(Mth_Data, aes(x = month, y = Dissolved.Oxygen.Saturation)) +
@@ -142,9 +147,10 @@ FC_fig10 <- ggplot(Mth_Data, aes(x = month, y = Fecal.Coliform)) +
   stat_summary(fun = "mean", geom = "bar", fill ="seagreen") +
   labs(
     x = "Month",
-    y = "Fecal Coliform (cfu/100mL)"
+    y = "Fecal Coli. (cfu/100mL)"
   ) +
-  geom_vline(xintercept = 6.8)
+  geom_vline(xintercept = 6.8)+ # group=1 is needed to connect lines for discrete x
+  scale_x_discrete(breaks = months_to_show)
 print(FC_fig10)
 
 F_fig11 <- ggplot(Mth_Data, aes(x = month, y = Fluoride)) +
@@ -162,7 +168,8 @@ GH_fig12 <- ggplot(Mth_Data, aes(x = month, y = Gage.height)) +
     x = "Month",
     y = "Gage Height (ft)"
   ) +
-  geom_vline(xintercept = 6.8)
+  geom_vline(xintercept = 6.8)+ # group=1 is needed to connect lines for discrete x
+  scale_x_discrete(breaks = months_to_show)
 print(GH_fig12)
 
 Hard_fig13 <- ggplot(Mth_Data, aes(x = month, y = Hardness)) +
@@ -180,7 +187,8 @@ Pb_fig14 <- ggplot(Mth_Data, aes(x = month, y = Lead)) +
     x = "Month",
     y = "Lead (ug/L)"
   ) +
-  geom_vline(xintercept = 6.8)
+  geom_vline(xintercept = 6.8)+ # group=1 is needed to connect lines for discrete x
+  scale_x_discrete(breaks = months_to_show)
 print(Pb_fig14)
 
 Mg_fig15 <- ggplot(Mth_Data, aes(x = month, y = Magnesium)) +
@@ -205,9 +213,10 @@ C_fig17 <- ggplot(Mth_Data, aes(x = month, y = Organic.Carbon)) +
   stat_summary(fun = "mean", geom = "bar", fill ="palegreen3") +
   labs(
     x = "Month",
-    y = "Organic Carbon (mg/L)"
+    y = "Org. C (mg/L)"
   ) +
-  geom_vline(xintercept = 6.8)
+  geom_vline(xintercept = 6.8)+ # group=1 is needed to connect lines for discrete x
+  scale_x_discrete(breaks = months_to_show)
 print(C_fig17)
 
 pH_fig18 <- ggplot(Mth_Data, aes(x = month, y = pH)) +
@@ -225,16 +234,18 @@ Temp_fig19 <- ggplot(Mth_Data, aes(x = month, y = Temperature)) +
     x = "Month",
     y = "Temperature (C)"
   ) +
-  geom_vline(xintercept = 6.8)
+  geom_vline(xintercept = 6.8)+ # group=1 is needed to connect lines for discrete x
+  scale_x_discrete(breaks = months_to_show)
 print(Temp_fig19)
 
 TN_fig20 <- ggplot(Mth_Data, aes(x = month, y = Total.Kjeldahl.Nitrogen)) +
   stat_summary(fun = "mean", geom = "bar", fill ="maroon4") +
   labs(
     x = "Month",
-    y = "Total Nitrogen (mg/L)"
+    y = "Tot. N (mg/L)"
   ) +
-  geom_vline(xintercept = 6.8)
+  geom_vline(xintercept = 6.8)+ # group=1 is needed to connect lines for discrete x
+  scale_x_discrete(breaks = months_to_show)
 print(TN_fig20)
 
 
@@ -242,8 +253,9 @@ TotalP_fig21 <- ggplot(Mth_Data, aes(x = month, y = Total.Phosphorus)) +
   stat_summary(fun = "mean", geom = "bar", fill = "steelblue") +
   labs(
     x = "Month",
-    y = "Total Phosphorus (mg/L)") +
-  geom_vline(xintercept = 6.8)
+    y = "Tot. P (mg/L)") +
+  geom_vline(xintercept = 6.8)+ # group=1 is needed to connect lines for discrete x
+  scale_x_discrete(breaks = months_to_show)
 print(TotalP_fig1)
 
 TSS_fig22 <- Mth_Data %>%
@@ -252,8 +264,9 @@ TSS_fig22 <- Mth_Data %>%
   stat_summary(fun = "mean", geom = "bar", fill = "orange2") +
   labs(
     x = "Month",
-    y = "Total Suspended Solids (mg/L)") +
-  geom_vline(xintercept = 6.8)
+    y = "TSS (mg/L)") +
+  geom_vline(xintercept = 6.8)+ # group=1 is needed to connect lines for discrete x
+  scale_x_discrete(breaks = months_to_show)
 print(TSS_fig22)
 
 TUR_fig23 <- ggplot(Mth_Data, aes(x = month, y = Turbidity)) +
@@ -261,7 +274,8 @@ TUR_fig23 <- ggplot(Mth_Data, aes(x = month, y = Turbidity)) +
   labs(
     x = "Month",
     y = "Turbidity (NTU)") +
-  geom_vline(xintercept = 6.8)
+  geom_vline(xintercept = 6.8)+ # group=1 is needed to connect lines for discrete x
+  scale_x_discrete(breaks = months_to_show)
 print(TUR_fig23)
 
 Zn_fig24 <- ggplot(Mth_Data, aes(x = month, y = Zinc)) +
@@ -271,6 +285,12 @@ Zn_fig24 <- ggplot(Mth_Data, aes(x = month, y = Zinc)) +
     y = "Zinc (ug/L)") +
   geom_vline(xintercept = 6.8)
 print(Zn_fig24)
+
+grid.arrange(TN_fig20, TotalP_fig21, BOD_fig2, EC_fig6, DO_fig8, FC_fig10,
+             GH_fig12, Pb_fig14, C_fig17, Temp_fig19, 
+             TSS_fig22, TUR_fig23, ncol=4,
+             bottom = textGrob("Figure 1. Distributions of measured variables.", 
+                    gp = gpar(fontsize = 10, fontitalic = TRUE)))
 
 ```
 

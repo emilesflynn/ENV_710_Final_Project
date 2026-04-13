@@ -29,6 +29,7 @@ library(car)
 library(lmerTest)
 library(GGally)
 library(sjPlot)
+library(ggpubr)
 
 ```
 
@@ -241,38 +242,9 @@ regression_plot <- data_clean_final_2025  %>%
 regression_plot
 ```
 
-The figures below are exploratory.
+
 
 ```{r TSS plot, echo=FALSE}
-TSS_fig22 <- data_clean_final_2025 %>%
-  filter(`Total Suspended Solids`< 100) %>%
-  ggplot(aes(x = Month, y = `Total Suspended Solids`)) +
-  stat_summary(fun = "mean", geom = "bar", fill = "orange") +
-  labs(
-    x = "Month",
-    y = "Total Suspended Solids (mg/L)") +
-  geom_vline(xintercept = 6.8)
-print(TSS_fig22)
-
-TUR_fig23 <- ggplot(data_clean_final_2025, aes(x = Month, y = Turbidity)) +
-  stat_summary(fun = "mean", geom = "bar", fill = "lightpink") +
-  labs(
-    x = "Month",
-    y = "Turbidity (NTU)") +
-  geom_vline(xintercept = 6.8)
-print(TUR_fig23)
-
-Zn_fig24 <- ggplot(data_clean_final_2025, aes(x = Month, y = Zinc)) +
-  stat_summary(fun = "mean", geom = "bar", fill = "grey25") +
-  labs(
-    x = "Month",
-    y = "Zinc (ug/L)") +
-  geom_vline(xintercept = 6.8)
-print(Zn_fig24)
-
-
-
-
 # Load necessary libraries
 library(lme4)
 library(lmerTest) # Provides p-values for lmer models
@@ -348,6 +320,37 @@ final_test1 <- wilcox.test(test_N$`Dissolved Oxygen`, test_S$`Dissolved Oxygen`,
                             paired = FALSE)
 
 print(final_test1)
+
+model_data1 <- combined_data %>%
+  mutate(Month_Num = as.numeric(factor(Month, 
+                                levels = c("Jan", "Feb", "Mar", "Apr", "May", "Jun", 
+                                           "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"))))
+
+ggplot(model_data1, aes(x = Basin, y = `Dissolved Oxygen`)) +
+  # Boxplots (Keeping them neutral to let the points shine)
+  geom_boxplot(fill = "grey95", color = "grey40", outlier.shape = NA, alpha = 0.5) +
+  
+  # Jittered points colored by Month (using the numeric gradient)
+  geom_jitter(aes(color = Month_Num), width = 0.25, alpha = 0.8, size = 2) +
+  
+  # The Red-Blue Seasonal Scale
+  # Low (Jan) = Blue, Mid (July) = Red, High (Dec) = Blue
+  # We use a n-color gradient to create a 'loop' or use a mid-point
+  scale_color_gradientn(colors = c("#0072B2", "#F0E442", "#D55E00", "#F0E442", "#0072B2"),
+                        breaks = c(1, 4, 7, 10, 12),
+                        labels = c("Jan", "Apr", "Jul", "Oct", "Dec"),
+                        name = "Season") +
+  
+  # Statistics
+  stat_compare_means(method = "wilcox.test", label = "p.format",
+                     label.x = 1.5) +
+  
+  theme_minimal() +
+  labs(title = "DO Distribution by Basin",
+       subtitle = "Comparison using Mann-Whitney U Test",
+       x = "Watershed Basin",
+       y = "Dissolved Oxygen (mg/L)")
+
 
 ```
 
@@ -429,21 +432,43 @@ Note (1) difference between N and S basins, (2) the variables that are significa
 
 ```{r random slope}
 # We allow TKN to have a random slope: (Total.Kjeldahl.Nitrogen | River_Name)
-slope_model_tn <- lmer(`Dissolved Oxygen` ~ Basin + Temperature + `Total Kjeldahl Nitrogen` + 
+slope_model_tn <- lmer(`Dissolved Oxygen` ~ Basin + Temperature + Turbidity+ 
+                         `Total Kjeldahl Nitrogen` + 
                        (`Total Kjeldahl Nitrogen` | River_Name), 
                        data = combined_data, control = lmerControl(optimizer = "bobyqa"))
-# Use plot_model with type = "pred" and specify the random factor
+
+summary(slope_model_tn)
+
+# This ensures they are sorted by Basin in the legend
+combined_data_sorted <- combined_data %>%
+  mutate(Basin_Code = ifelse(Basin == "Neuse (North)", "N", "S")) %>%
+  mutate(Legend_Name = paste0("(", Basin_Code, ") ", River_Name)) %>%
+  arrange(Basin, River_Name)
+
+# 2. Extract the sorted levels for the legend
+sorted_labels <- unique(combined_data_sorted$Legend_Name)
+
+# 3. Define the 11-color palette (7 Reds for North, 4 Blues for South)
+custom_colors <- c(
+  "#084594", "#2171b5", "#4292c6", "#74a9cf",                          # Cape Fear
+  "#67000d", "#a50f15", "#cb181d", "#ef3b2c", "#fb6a4a", "#fc9272", "#ffb366" # Neuse
+)
+
 # This will plot the individual slopes for each river
 tn_slope_plot <- plot_model(slope_model_tn, 
                             type = "pred", 
                             terms = c("Total Kjeldahl Nitrogen", "River_Name"),
                             pred.type = "re", # This ensures it uses the random effects (various slopes)
                             ci.lvl = NA) +    # Removing CI ribbons makes the slopes easier to see
+  scale_color_manual(values = custom_colors, 
+                     labels = sorted_labels) +
+  # Force the Y-axis to start at 0 but let the top be automatic
+  scale_y_continuous(limits = c(0, NA), expand = c(0, 0)) +
   labs(title = "Sensitivity of Dissolved Oxygen to Nitrogen by River",
        x = "Total Kjeldahl Nitrogen (mg/L)",
        y = "Predicted Dissolved Oxygen (mg/L)",
        colour = "River Name") +
-  scale_color_viridis_d(option = "plasma") +
+  #scale_color_viridis_d(option = "plasma") +
   theme_minimal()
 
 print(tn_slope_plot)
@@ -455,6 +480,8 @@ print(VarCorr(slope_model_tn), comp = "Variance")
 ```
 
 Note: How each river is responding to the environmental changes differently.
+
+Our model revealed significant variation in how Durham’s rivers respond to nitrogen stress. With a TKN variance of 9.56, we see that river sensitivity is not uniform; some streams are far more vulnerable to nutrient pulses than others. Interestingly, the negative covariance suggests that our highest-quality baseline sites actually show the steepest declines under stress, highlighting a critical need to protect our remaining high-functioning riparian zones.
 
 Below we are adding the storm event into the model:
 
@@ -487,9 +514,13 @@ spaghetti_storm <- plot_model(storm_impact_model,
                               terms = c("Total Kjeldahl Nitrogen", "River_Name", "Storm_Phase"),
                               pred.type = "re", # Use random effects for individual river lines
                               ci.lvl = NA) +    # Remove ribbons for clarity
-  scale_color_viridis_d(option = "turbo") +
+  #scale_color_viridis_d(option = "turbo") +
+  scale_color_manual(values = custom_colors, 
+                     labels = sorted_labels) +
+  # Force the Y-axis to start at 0 but let the top be automatic
+  #scale_y_continuous(limits = c(0, NA), expand = c(0, 0)) +
   labs(title = "River-Specific Nitrogen Sensitivity Across Storm Phases",
-       subtitle = "Slopes represent the marginal effect of TKN on Dissolved Oxygen",
+       subtitle = "*Y-axis extends below 0 only to fully illustrate the slopes.",
        x = "Total Kjeldahl Nitrogen (mg/L)",
        y = "Predicted Dissolved Oxygen (mg/L)",
        colour = "River Name") +
