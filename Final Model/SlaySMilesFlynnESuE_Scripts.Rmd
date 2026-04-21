@@ -543,7 +543,7 @@ The Nitrogen "Penalty": Total Kjeldahl Nitrogen has a significant negative effec
 
 The "Storm Phase After" Impact: Interestingly, Storm_PhaseAfter is highly significant and negative ($-2.00$, $p = 3.47e-06$). This suggests that after the storm passed, DO levels were $2\text{ mg/L}$ lower than the baseline even after accounting for temperature and nutrients. This points to a "lingering hangover" effect—potentially from decaying organic matter settled on the riverbeds.
 
-The Interaction Term (TKN:Storm_PhaseAfter): This is significant and positive ($1.33$, $p = 0.042$). This is a complex finding! It suggests that in the "After" phase, the negative impact of TKN on DO was actually mitigated compared to the "Before" phase. This could be because the storm "flushed" the system so thoroughly that the remaining nitrogen wasn't as biologically active, or the relationship was drowned out by the overall drop in DO.
+The Interaction Term (TKN:Storm_PhaseAfter): This is significant and positive ($1.33$, $p = 0.042$). It suggests that in the "After" phase, the negative impact of TKN on DO was actually mitigated compared to the "Before" phase. This could be because the storm "flushed" the system so thoroughly that the remaining nitrogen wasn't as biologically active, or the relationship was drowned out by the overall drop in DO.
 
 ### Validating model
 
