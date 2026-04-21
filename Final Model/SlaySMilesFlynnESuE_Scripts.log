@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.3.24)  20 APR 2026 23:12
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.3.24)  20 APR 2026 23:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -629,7 +629,7 @@ LaTeX Warning: Command \textdegree invalid in math mode on input line 1030.
 <SlaySMilesFlynnESuE_Scripts_files/figure-latex/validate-1.pdf, id=179, 461.725pt x 320.19624pt>
 File: SlaySMilesFlynnESuE_Scripts_files/figure-latex/validate-1.pdf Graphic file (type pdf)
 <use SlaySMilesFlynnESuE_Scripts_files/figure-latex/validate-1.pdf>
-Package pdftex.def Info: SlaySMilesFlynnESuE_Scripts_files/figure-latex/validate-1.pdf  used on input line 1090.
+Package pdftex.def Info: SlaySMilesFlynnESuE_Scripts_files/figure-latex/validate-1.pdf  used on input line 1089.
 (pdftex.def)             Requested size: 461.72388pt x 320.19545pt.
 [20 <./SlaySMilesFlynnESuE_Scripts_files/figure-latex/validate-1.pdf>] (./SlaySMilesFlynnESuE_Scripts.aux)
  ***********
@@ -646,7 +646,7 @@ Here is how much of TeX's memory you used:
  14 hyphenation exceptions out of 8191
  89i,7n,93p,779b,638s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on SlaySMilesFlynnESuE_Scripts.pdf (20 pages, 456476 bytes).
+Output written on SlaySMilesFlynnESuE_Scripts.pdf (20 pages, 456462 bytes).
 PDF statistics:
  289 PDF objects out of 1000 (max. 8388607)
  217 compressed objects within 3 object streams
