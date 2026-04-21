@@ -30,6 +30,8 @@ library(lmerTest)
 library(GGally)
 library(sjPlot)
 library(ggpubr)
+library(performance)
+library(see)
 
 ```
 
@@ -53,13 +55,13 @@ The raw data was downloaded from the Durham water quality web portal, which is m
 The raw data frame presents each measurement in a separate row. The code below merge the measurements conducted at the same location on the same day into one observation.
 
 ```{r raw data}
-# Set your ggplot theme
+# Set ggplot theme
 mytheme <- theme_classic(base_size = 14) +
   theme(axis.text = element_text(color = "black"), 
         legend.position = "right")
 theme_set(mytheme)
 
-# Load your datasets
+# Load datasets
 durham_data_raw <- read_csv(here("Data/SlaySMilesFlynnESuEData_Raw_2025.csv"), 
     col_types = cols(Date = col_date(format = "%Y/%m/%d")))
 # View(durham_data_raw)
@@ -99,7 +101,7 @@ problem_rows <- data_clean%>%
 # Show the unique station names that failed
 unique(problem_rows$`Station Name`)
 
-# Replace the abbreviations with your actual names
+# Replace the abbreviations with actual names
 river_lookup <- data.frame(
   River_abbr = c("EL", "EN", "NH", "TF", "CC", "NE", "LC", "LL", "LR", "PN", "SI"),
   Watershed = c("Ellerbe Creek", "Eno River", "New Hope Creek", "Third Fork Creek", 
@@ -253,7 +255,7 @@ library(tidyverse)
 combined_data <- read_csv(here("Data/SlaySMilesFlynnESuEData_Final_2025.csv"))
 
 # 1. Prepare Data
-# Ensure your categorical variables are recognized as Factors
+# Ensure categorical variables are recognized as Factors
 combined_data <- combined_data %>%
   mutate(
     Basin = as.factor(Basin),
@@ -336,7 +338,7 @@ ggplot(model_data1, aes(x = Basin, y = `Dissolved Oxygen`)) +
   # The Red-Blue Seasonal Scale
   # Low (Jan) = Blue, Mid (July) = Red, High (Dec) = Blue
   # We use a n-color gradient to create a 'loop' or use a mid-point
-  scale_color_gradientn(colors = c("#0072B2", "#F0E442", "#D55E00", "#F0E442", "#0072B2"),
+  scale_color_gradientn(colors = c("#0072B2", "#F0E442", "#D55E00", "#90EE90", "#0072B2"),
                         breaks = c(1, 4, 7, 10, 12),
                         labels = c("Jan", "Apr", "Jul", "Oct", "Dec"),
                         name = "Season") +
@@ -366,7 +368,7 @@ cor_check <- combined_data %>%
   cor()
 print(cor_check)
 
-# 1. Select your candidate parameters
+# 1. Select candidate parameters
 params <- combined_data %>%
   select(`Dissolved Oxygen`, Temperature, Turbidity, 
          `Total Kjeldahl Nitrogen`, `Nitrate + Nitrite as N`, `Organic Carbon`, 
@@ -377,7 +379,7 @@ params <- combined_data %>%
 cor_matrix <- cor(params)
 print(cor_matrix)
 
-# 3. Visual Check (Highly recommended for your report)
+# 3. Visual Check
 ggpairs(params)
 
 ```
@@ -497,7 +499,7 @@ combined_data <- combined_data %>%
          # Set "Before" as the reference group for comparison
          Storm_Phase = factor(Storm_Phase, levels = c("Before", "During", "After")))
 
-# We use the fixed effects from your "Winner" Model 2
+# We use the fixed effects from "Winner" Model 2
 # We add Storm_Phase and its interaction with TKN
 storm_impact_model <- lmer(`Dissolved Oxygen` ~ Basin + Temperature + Turbidity + 
                            `Total Kjeldahl Nitrogen` * Storm_Phase + 
@@ -508,7 +510,7 @@ summary(storm_impact_model)
 
 
 # We use type = "pred" to show predicted values
-# We facet by Storm_Phase to see how the 'spaghetti' changes over time
+# We facet by Storm_Phase to see how the plot changes over time
 spaghetti_storm <- plot_model(storm_impact_model, 
                               type = "pred", 
                               terms = c("Total Kjeldahl Nitrogen", "River_Name", "Storm_Phase"),
@@ -535,7 +537,7 @@ What we can learn from the new model with storm:
 
 Key Interpretations of Fixed Effects
 
-The Temperature Law: As expected, Temperature is your most significant predictor ($p < 2e-16$). For every $1°\text{C}$ increase in water temperature, Dissolved Oxygen (DO) drops by approximately $0.27\text{ mg/L}$. This is the physical baseline you've correctly controlled for.
+The Temperature Law: As expected, Temperature is the most significant predictor ($p < 2e-16$). For every $1°\text{C}$ increase in water temperature, Dissolved Oxygen (DO) drops by approximately $0.27\text{ mg/L}$. This is the physical baseline you've correctly controlled for.
 
 The Nitrogen "Penalty": Total Kjeldahl Nitrogen has a significant negative effect ($-1.31$, $p = 0.011$). In the "Before" (baseline) phase, increasing nitrogen significantly reduces available oxygen.
 
@@ -543,9 +545,19 @@ The "Storm Phase After" Impact: Interestingly, Storm_PhaseAfter is highly signif
 
 The Interaction Term (TKN:Storm_PhaseAfter): This is significant and positive ($1.33$, $p = 0.042$). This is a complex finding! It suggests that in the "After" phase, the negative impact of TKN on DO was actually mitigated compared to the "Before" phase. This could be because the storm "flushed" the system so thoroughly that the remaining nitrogen wasn't as biologically active, or the relationship was drowned out by the overall drop in DO.
 
-What does the tree-panel plot tell us?
+### Validating model
 
-This plot visually proves your $H_3$ (resilience). If you see that certain rivers in the Neuse Basin have lines that stay much lower in the "After" panel than the Cape Fear rivers, you have clear evidence of a "lagging recovery" in the northern part of Durham.
+```{r validate}
+# Calculate VIF
+model_vif <- check_collinearity(slope_model_tn)
 
+# Print the results
+print(model_vif)
 
+# Plot the VIF
+plot(model_vif)
+
+```
+
+All the VIFs are near one, which indicates that multicollinearity is unlikely for our model.
 

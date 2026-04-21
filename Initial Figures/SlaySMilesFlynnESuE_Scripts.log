@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.3.24)  13 APR 2026 07:39
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.3.24)  20 APR 2026 23:12
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -552,53 +552,53 @@ File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <10> not available
 (Font)              Font shape `T1/lmtt/b/n' tried instead on input line 133.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <10> on input line 169.
+(Font)              <10> on input line 171.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <7> on input line 169.
+(Font)              <7> on input line 171.
 LaTeX Font Info:    External font `lmex10' loaded for size
-(Font)              <5> on input line 169.
+(Font)              <5> on input line 171.
 [1
 
 {/Users/ericarquette/Library/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}]
-LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 197.
+LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 199.
 (/Users/ericarquette/Library/TinyTeX/texmf-dist/tex/latex/lm/ts1lmtt.fd
 File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 ) [2{/Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}] [3]
 <SlaySMilesFlynnESuE_Scripts_files/figure-latex/DO Plot-1.pdf, id=33, 459.7175pt x 342.27875pt>
 File: SlaySMilesFlynnESuE_Scripts_files/figure-latex/DO Plot-1.pdf Graphic file (type pdf)
 <use SlaySMilesFlynnESuE_Scripts_files/figure-latex/DO Plot-1.pdf>
-Package pdftex.def Info: SlaySMilesFlynnESuE_Scripts_files/figure-latex/DO Plot-1.pdf  used on input line 357.
+Package pdftex.def Info: SlaySMilesFlynnESuE_Scripts_files/figure-latex/DO Plot-1.pdf  used on input line 359.
 (pdftex.def)             Requested size: 459.74442pt x 342.29878pt.
 [4] [5 <./SlaySMilesFlynnESuE_Scripts_files/figure-latex/DO Plot-1.pdf>]
 <SlaySMilesFlynnESuE_Scripts_files/figure-latex/plot2-1.pdf, id=57, 459.7175pt x 315.1775pt>
 File: SlaySMilesFlynnESuE_Scripts_files/figure-latex/plot2-1.pdf Graphic file (type pdf)
 <use SlaySMilesFlynnESuE_Scripts_files/figure-latex/plot2-1.pdf>
-Package pdftex.def Info: SlaySMilesFlynnESuE_Scripts_files/figure-latex/plot2-1.pdf  used on input line 423.
+Package pdftex.def Info: SlaySMilesFlynnESuE_Scripts_files/figure-latex/plot2-1.pdf  used on input line 425.
 (pdftex.def)             Requested size: 459.74442pt x 315.19595pt.
 [6] [7 <./SlaySMilesFlynnESuE_Scripts_files/figure-latex/plot2-1.pdf>] [8] [9]
 <SlaySMilesFlynnESuE_Scripts_files/figure-latex/test-1.pdf, id=93, 453.695pt x 313.17pt>
 File: SlaySMilesFlynnESuE_Scripts_files/figure-latex/test-1.pdf Graphic file (type pdf)
 <use SlaySMilesFlynnESuE_Scripts_files/figure-latex/test-1.pdf>
-Package pdftex.def Info: SlaySMilesFlynnESuE_Scripts_files/figure-latex/test-1.pdf  used on input line 606.
+Package pdftex.def Info: SlaySMilesFlynnESuE_Scripts_files/figure-latex/test-1.pdf  used on input line 608.
 (pdftex.def)             Requested size: 453.6939pt x 313.16922pt.
 [10 <./SlaySMilesFlynnESuE_Scripts_files/figure-latex/test-1.pdf>]
 <SlaySMilesFlynnESuE_Scripts_files/figure-latex/correlation check-1.pdf, id=112, 456.70625pt x 310.15875pt>
 File: SlaySMilesFlynnESuE_Scripts_files/figure-latex/correlation check-1.pdf Graphic file (type pdf)
 <use SlaySMilesFlynnESuE_Scripts_files/figure-latex/correlation check-1.pdf>
-Package pdftex.def Info: SlaySMilesFlynnESuE_Scripts_files/figure-latex/correlation check-1.pdf  used on input line 682.
+Package pdftex.def Info: SlaySMilesFlynnESuE_Scripts_files/figure-latex/correlation check-1.pdf  used on input line 684.
 (pdftex.def)             Requested size: 456.70512pt x 310.15799pt.
 [11]
-Overfull \hbox (2.7436pt too wide) in paragraph at lines 717--717
+Overfull \hbox (2.7436pt too wide) in paragraph at lines 719--719
 []\T1/lmtt/m/n/10 ## model_3: `Dissolved Oxygen` ~ Basin + Temperature + `Organic Carbon` + (1 | River_Name)[] 
  []
 
 
-Overfull \hbox (112.99329pt too wide) in paragraph at lines 717--717
+Overfull \hbox (112.99329pt too wide) in paragraph at lines 719--719
 []\T1/lmtt/m/n/10 ## model_1: `Dissolved Oxygen` ~ Basin + Temperature + `Organic Carbon` + `Total Phosphorus` + (1 | River_Name)[] 
  []
 
 
-Overfull \hbox (112.99329pt too wide) in paragraph at lines 717--717
+Overfull \hbox (112.99329pt too wide) in paragraph at lines 719--719
 []\T1/lmtt/m/n/10 ## model_2: `Dissolved Oxygen` ~ Basin + Temperature + Turbidity + `Total Kjeldahl Nitrogen` + (1 | River_Name)[] 
  []
 
@@ -606,44 +606,50 @@ Overfull \hbox (112.99329pt too wide) in paragraph at lines 717--717
 <SlaySMilesFlynnESuE_Scripts_files/figure-latex/random slope-1.pdf, id=137, 454.69875pt x 315.1775pt>
 File: SlaySMilesFlynnESuE_Scripts_files/figure-latex/random slope-1.pdf Graphic file (type pdf)
 <use SlaySMilesFlynnESuE_Scripts_files/figure-latex/random slope-1.pdf>
-Package pdftex.def Info: SlaySMilesFlynnESuE_Scripts_files/figure-latex/random slope-1.pdf  used on input line 882.
+Package pdftex.def Info: SlaySMilesFlynnESuE_Scripts_files/figure-latex/random slope-1.pdf  used on input line 884.
 (pdftex.def)             Requested size: 454.70456pt x 315.18153pt.
 [15] [16 <./SlaySMilesFlynnESuE_Scripts_files/figure-latex/random slope-1.pdf>] [17]
 <SlaySMilesFlynnESuE_Scripts_files/figure-latex/beforeafter-1.pdf, id=158, 454.69875pt x 315.1775pt>
 File: SlaySMilesFlynnESuE_Scripts_files/figure-latex/beforeafter-1.pdf Graphic file (type pdf)
 <use SlaySMilesFlynnESuE_Scripts_files/figure-latex/beforeafter-1.pdf>
-Package pdftex.def Info: SlaySMilesFlynnESuE_Scripts_files/figure-latex/beforeafter-1.pdf  used on input line 1021.
+Package pdftex.def Info: SlaySMilesFlynnESuE_Scripts_files/figure-latex/beforeafter-1.pdf  used on input line 1023.
 (pdftex.def)             Requested size: 454.70456pt x 315.18153pt.
 [18]
 
-LaTeX Warning: Command \textdegree invalid in math mode on input line 1028.
+LaTeX Warning: Command \textdegree invalid in math mode on input line 1030.
 
-LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1028.
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 1030.
 (/Users/ericarquette/Library/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
 )
 
-LaTeX Warning: Command \textdegree invalid in math mode on input line 1028.
+LaTeX Warning: Command \textdegree invalid in math mode on input line 1030.
 
-[19{/Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc} <./SlaySMilesFlynnESuE_Scripts_files/figure-latex/beforeafter-1.pdf>] (./SlaySMilesFlynnESuE_Scripts.aux)
+[19{/Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc} <./SlaySMilesFlynnESuE_Scripts_files/figure-latex/beforeafter-1.pdf>]
+<SlaySMilesFlynnESuE_Scripts_files/figure-latex/validate-1.pdf, id=179, 461.725pt x 320.19624pt>
+File: SlaySMilesFlynnESuE_Scripts_files/figure-latex/validate-1.pdf Graphic file (type pdf)
+<use SlaySMilesFlynnESuE_Scripts_files/figure-latex/validate-1.pdf>
+Package pdftex.def Info: SlaySMilesFlynnESuE_Scripts_files/figure-latex/validate-1.pdf  used on input line 1090.
+(pdftex.def)             Requested size: 461.72388pt x 320.19545pt.
+[20 <./SlaySMilesFlynnESuE_Scripts_files/figure-latex/validate-1.pdf>] (./SlaySMilesFlynnESuE_Scripts.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 13402 strings out of 469515
- 210408 string characters out of 5468485
- 638905 words of memory out of 5000000
- 41774 multiletter control sequences out of 15000+600000
+ 13413 strings out of 469515
+ 210947 string characters out of 5468485
+ 638945 words of memory out of 5000000
+ 41783 multiletter control sequences out of 15000+600000
  680047 words of font info for 87 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  89i,7n,93p,779b,638s stack positions out of 10000i,1000n,20000p,200000b,200000s
-</Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr7.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on SlaySMilesFlynnESuE_Scripts.pdf (19 pages, 465581 bytes).
+</Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt10.pfb></Users/ericarquette/Library/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
+Output written on SlaySMilesFlynnESuE_Scripts.pdf (20 pages, 456476 bytes).
 PDF statistics:
- 275 PDF objects out of 1000 (max. 8388607)
- 205 compressed objects within 3 object streams
- 32 named destinations out of 1000 (max. 500000)
- 95 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 289 PDF objects out of 1000 (max. 8388607)
+ 217 compressed objects within 3 object streams
+ 34 named destinations out of 1000 (max. 500000)
+ 108 words of extra memory for PDF output out of 10000 (max. 10000000)
 
